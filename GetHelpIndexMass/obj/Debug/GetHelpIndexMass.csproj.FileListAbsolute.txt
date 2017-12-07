@@ -1,0 +1,8 @@
+D:\Документы D\Projects\C#\Students\Lesson2\Семен Корепанов\SaimonHomeWork2\GetHelpIndexMass\bin\Debug\GetHelpIndexMass.exe.config
+D:\Документы D\Projects\C#\Students\Lesson2\Семен Корепанов\SaimonHomeWork2\GetHelpIndexMass\bin\Debug\GetHelpIndexMass.exe
+D:\Документы D\Projects\C#\Students\Lesson2\Семен Корепанов\SaimonHomeWork2\GetHelpIndexMass\bin\Debug\GetHelpIndexMass.pdb
+D:\Документы D\Projects\C#\Students\Lesson2\Семен Корепанов\SaimonHomeWork2\GetHelpIndexMass\bin\Debug\MyUtilites.dll
+D:\Документы D\Projects\C#\Students\Lesson2\Семен Корепанов\SaimonHomeWork2\GetHelpIndexMass\bin\Debug\MyUtilites.pdb
+D:\Документы D\Projects\C#\Students\Lesson2\Семен Корепанов\SaimonHomeWork2\GetHelpIndexMass\obj\Debug\GetHelpIndexMass.csprojResolveAssemblyReference.cache
+D:\Документы D\Projects\C#\Students\Lesson2\Семен Корепанов\SaimonHomeWork2\GetHelpIndexMass\obj\Debug\GetHelpIndexMass.exe
+D:\Документы D\Projects\C#\Students\Lesson2\Семен Корепанов\SaimonHomeWork2\GetHelpIndexMass\obj\Debug\GetHelpIndexMass.pdb
