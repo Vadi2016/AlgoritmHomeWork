@@ -1,0 +1,397 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <locale.h>
+
+
+int main(int argc, char* argv[])
+{
+	int w=0;
+	double h=0;
+
+	bodyMassIndex(w, h);
+	
+	findMaxFromFourVal(4,6,22,3);
+
+	int a = 5;
+	int b = 17;
+	printf("Before changin variables be: %d, %d\n", a, b);
+	changin_1(a, b);
+
+	changin_2(a, b);
+	printf("\n");
+	
+	quadraticEquation();
+	printf("\n");
+	timesofyear(); 
+	printf("\n");
+	ageofMan(); 
+	EnterCoordinat();
+	divisionNumbers();
+	intNumbers();
+	averege();
+	maximumofThree();
+	randomNum();
+	avtomorfNum();
+	quadratandcube();
+
+   	return 0;
+}
+
+/* Ввести вес и рост человека.
+ Рассчитать и вывести индекс массы тела по формуле I=m/(h*h); 
+ где m-масса тела в килограммах, 
+ h - рост в метрах. */
+
+int bodyMassIndex(int weight, double height)
+{
+	
+	double imt;
+	printf("Enter weight in kg: \n");
+	scanf("%d", &weight);
+	printf("Enter height in m: \n");
+	scanf("%lf", &height);
+	printf("\n");
+	imt = weight/(height*height);		
+	printf("Your Body Mass Index = %.2lf\n",imt);
+	return imt;
+}
+
+/* Найти максимальное из четырех чисел. Массивы не использовать. */
+
+int findMaxFromFourVal(int a, int b, int c, int d)
+{
+	int max1;
+	int max2;
+	int result;
+	if (a >= b) max1 = a; 
+	else max1 = b;
+	if (c >= d) max2 = c;
+	else max2 = d;
+	if (max1 >= max2) result = max1;
+	else result = max2; 
+	printf("\n");
+	printf("Maximum of four digits = %d\n", result);	 
+	return result;
+}
+
+
+/*  Написать программу обмена значениями двух целочисленных переменных:  
+    a. с использованием третьей переменной;*/
+int changin_1 (int a, int b)
+{
+	int c = a;
+	a = b;
+	b = c;
+	printf("Result after changin use 3 variable: %d, %d\n", a, b);	
+	return 0;	
+}
+//  b. *без использования третьей переменной. 	
+int changin_2 (int a, int b)
+{
+	a = a + b;
+	b = a - b;
+	a = a - b;
+	printf("Result after changin without 3 variable: %d, %d\n", a, b);
+	return 0;
+}
+
+//  Написать программу нахождения корней заданного квадратного уравнения.
+
+int quadraticEquation(int a,int b,int c)
+{
+	int d;
+	float x1, x2;
+	printf("Enter 3 numbers: \n");
+	scanf("%d", &a);
+	scanf("%d", &b);
+	scanf("%d", &c);
+	d = b * b - 4 * a * c;
+
+	if (d > 0)
+	{	
+		x1 = (-b + sqrt(d)) / (2 * a);
+        	x2 = (-b - sqrt(d)) / (2 * a);
+		printf("Result = x1 = %f,x2 = %f\n", x1, x2);
+	} 
+	if (d == 0)
+	{	
+		x2 = (-b - sqrt(d)) / (2 * a);
+		printf("Result = x2 = %f\n", x2);
+	} 
+	if (d < 0) printf("Korney net\n");
+	
+	return 0;
+}
+
+// С клавиатуры вводится номер месяца. Требуется определить, к какому времени года он относится.
+
+int timesofyear ()
+{
+	int month;
+	printf("Enter the month number of the year: \n");
+	scanf("%d", &month);
+	printf ("Ok! This is a ");
+	switch (month)
+	{
+		case 1:
+		case 2:
+		case 12:
+		printf("**Winter!**");
+		break;		
+		case 3:
+		case 4:
+		case 5:
+		printf("Spring!");
+		break;
+		case 6:
+		case 7:
+		case 8:
+		printf("Summer");
+		break;		
+		case 9:
+		case 10:
+		case 11:
+		printf("Autumn!");
+		break;	
+		default:
+		printf("Nothing");
+		break;			
+	}
+	return 0;	
+}
+
+
+// Ввести возраст человека (от 1 до 150 лет) и вывести его вместе с последующим словом «год», «года» или «лет».
+
+int ageofMan (int age)
+{
+	setlocale(LC_ALL, "Rus");
+	int y1;
+	int y2;
+	int i = 0;
+	
+	printf("Enter your age: ");
+	scanf("%d", &age);
+	printf("\n");
+	y1 = age % 10;
+	y2 = age % 100;
+	if (y1 == 1 && y2 != 11)
+	{
+		printf("Вам %d год\n", age);
+		i++;
+	}
+	if (y1 >= 2 && y1 <= 4 && (y2 < 10 || y2 >= 20))
+	{ 
+		printf("Вам %d года\n", age);
+		i++;
+	}
+	if(i==0) printf("Вам %d лет\n", age);
+	
+	return 0;
+}
+
+/*  С клавиатуры вводятся числовые координаты двух полей шахматной доски (x1,y1,x2,y2). 
+    Требуется определить, относятся ли к поля к одному цвету или нет.*/
+
+int EnterCoordinat(int x1, int y1, int x2, int y2)
+{
+	
+
+    printf("Enter a coordinate of cells (x1 y1 x2 y2): ");
+    scanf("%d %d %d %d", &x1, &y1, &x2, &y2);
+
+    if ((x1 + y1) % 2 == (x2 + y2) % 2) 
+        printf("The colors of cells is the same: %s", (x1 + y1) % 2 == 0 ? "black" : "white");
+    else 
+        printf("The colors of cells is different!\n");
+	return 0;
+}
+
+/*
+* Ввести a и b и вывести квадраты и кубы чисел от a до b.
+*/
+
+int quadratandcube(int a, int b)
+{
+ 	printf("Enter two numbers: (A < B): ");
+    	scanf("%d %d", &a, &b);
+
+   	while (a <= b) 
+	{
+        	printf("%d, square = %d, cube = %d\n", a, a*a, a*a*a);
+        	a++;
+	}
+	return 0;
+}
+
+/*
+*  Даны целые положительные числа N и K. Используя только операции сложения и вычитания, 
+*    найти частное от деления нацело N на K, а также остаток от этого деления.
+*/
+
+void divisionNumbers(int n, int k) 
+{
+    
+	int result = 0;
+
+	printf("Enter two numbers N and K: ");
+    	scanf("%d %d", &n, &k);
+
+    	if (n < 0 || k < 0) 
+	{
+        	printf("Invalid input!");
+        	return;
+    	}
+
+	while (n >= k) 
+	{
+        	n -= k;
+        	result++;
+	}
+
+    	printf("N / K = %d, remainder = %d\n", result, n);
+	
+}
+
+
+/*
+*  Дано целое число N (> 0). С помощью операций деления нацело и взятия остатка от деления определить,
+*     имеются ли в записи числа N нечетные цифры. Если имеются, то вывести True, если нет — вывести False.
+*/
+void intNumbers(int n)
+{
+	
+	int result = 0;
+ 	
+
+	printf("Enter the number N > 0: ");
+	scanf("%d", &n);
+
+	if (n <= 0)
+	{
+        	printf("Invalid number!");
+        	return;
+    	}
+
+	while (n > 0)
+	{
+        	if ((n % 10) % 2 == 1)	
+		{
+            		result = 1;
+            		break;
+        	}
+        	n /= 10;
+    	}
+
+    	printf("Odd number: %s\n", result == 0 ? "False" : "True");
+	
+}
+
+/*
+*  С клавиатуры вводятся числа, пока не будет введен 0. 
+*  Подсчитать среднее арифметическое всех положительных четных чисел, оканчивающихся на 8.
+*/
+int averege(int num, int count, int sum)
+{
+
+    printf("Enter the numbers (for exit press - 0): ");
+    scanf("%d", &num);
+
+    while (num != 0) {
+        if (num > 0 && num % 10 == 8) {
+            count++;
+            sum += num;
+        }
+        scanf("%d", &num);
+    }
+
+    if (count > 0) 
+        printf("Averege= %lf\n", (double)sum / count);
+    else
+        printf("No good numbers!");
+	return 0;
+}
+
+/*
+* Написать функцию нахождения максимального из трех чисел.
+*/
+int maximumofThree(int a, int b, int c) 
+{
+	 int max = 0;
+    	printf("\nEnter three numbers: ");
+	scanf("%d %d %d", &a, &b, &c);
+
+    if (a >= b && a >= c)
+        max = a;
+    else if (b >= a && b >= c)
+        max = b;
+    else
+        max = c;
+
+    printf("Max number = %d\n", max);
+	return 0;
+}
+
+/*
+*  *Написать функцию, генерирующую случайное число от 1 до 100.
+*      а) с использованием стандартной функции rand()
+*      б) без использования стандартной функции rand()
+*/
+int randomNum(int x) {
+    int a = 2, b = 3, m = 100;
+    int n = 100, i = 0;
+    
+
+    srand(time(NULL));
+    x = rand() % 100 + 1;
+
+    while (i < n)
+    {
+        x = ((a + i) * x  + b)  % m;
+        printf("%d ", x);
+        i++;
+    }
+	return 0;
+}
+
+/*
+* * Автоморфные числа. Натуральное число называется автоморфным, если оно равно последним цифрам своего квадрата.
+*    Например, 25 \ :sup: 2 = 625.Напишите программу, которая вводит натуральное число N и 
+*    выводит на экран все автоморфные числа, не превосходящие N.
+*/
+void avtomorfNum() 
+{
+    unsigned int n = 0, i = 0;
+    unsigned int tn = 0, tq = 0, res = 0;
+    printf("Enter the number N > 0: ");
+    scanf("%d", &n);
+
+    if (n > 65535) {
+        printf("Too many!\n");
+        return;
+    }
+
+    while (i <= n)
+    {
+        if (i > 1 && i % 10 != 5 && i % 10 != 6) { 
+            i++;
+            continue;
+        }
+        tn = i;
+        tq = i * i;
+        res = 1;
+        while (tn > 0) {
+            if (tn % 10 != tq % 10) {
+                res = 0;
+                break;
+            }
+            tn /= 10;
+            tq /= 10;
+        }
+        if (res != 0)
+            printf("%d - %d\n", i, i * i);
+        i++;
+    }
+}
