@@ -1,0 +1,137 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+
+int main(int argc, char* argv[]) 
+{
+	setlocale(LC_ALL, "Russian");
+    	char str[33] = {0};
+	int a = 0;
+	int t =  0;
+	int tr = 0; 
+	int trf = 0;	
+
+    	printf("Введите число: ");
+   	scanf("%d", &a);
+	binaryTranslete(a, str);
+    	printf("%d = %s\n", a, str);
+	printf("\n-------------------------------------------------------------\n");
+    
+    	printf("\nВозведение числа: 2^2 = %d (без рекурсии)", erection(2, 2));    	
+    	printf("\nВозведение числа: 2^2 = %d (рекурсивно)", recursionConstr(2, 2));    	
+    	printf("\nВозведение числа: 2^2 = %d (рекурсивно, используя свойство чётности степени)", recursionWithParityProp(2, 2));    	
+	printf("\n\n----------------------------------------------------------------------------------------------"); 
+  
+    	printf("\n\nКоличество программ, которые число 3 преобразуют в число 20 = %d (используя рекурсию)\n", calcWithRecursion(3, 20));
+    	printf("Количество программ, которые число 3 преобразуют в число 20 = %d (используя массив)\n", calcWithArr(3, 20));
+	    	
+	return 0;
+}
+
+
+
+/*
+ *  1. Реализовать функцию перевода из 10 системы в двоичную используя рекурсию.
+ */
+int binaryTranslete(int num, char* bin) 
+{
+    	char str[2];
+
+    	if (num >= 2)
+        	binaryTranslete(num >> 1, bin);
+
+   	return strcat(bin, itoa((num % 2), str, 10));
+}
+
+/*
+ * 2. Реализовать функцию возведения числа a в степень b:
+ *    a. без рекурсии;
+ */
+
+int erection(int a, int b) 
+{
+	int t = 0;
+	long result = 1;	
+	
+	for (int i = 0; i < b; i++)
+	{
+		result *= a;
+	}
+   	
+	return result;
+}
+
+// b. рекурсивно;
+
+int recursionConstr(int a, unsigned int b) 
+{
+	if (b == 0)
+        	return 1;
+    	return a * recursionConstr(a, --b);
+}
+
+// c. *рекурсивно, используя свойство чётности степени.
+
+
+int recursionWithParityProp(int a, unsigned int b) 
+{	
+	if (b == 0) return 1;
+
+    	if (b % 2 == 0)
+        	return recursionWithParityProp(a * a, b >> 1);
+    	else
+		return a * recursionWithParityProp(a, --b);
+}
+
+/*
+ * 3. Исполнитель Калькулятор преобразует целое число, записанное на экране. 
+ *    У исполнителя две команды, каждой команде присвоен номер:
+ *    1.Прибавь 1 
+ *    2.Умножь на 2 
+ *    Первая команда увеличивает число на экране на 1, 
+ *    вторая увеличивает это число в 2 раза.
+ *    Сколько существует программ, которые число 3 преобразуют в число 20? 
+ */
+
+// а) с использованием массива; 
+
+int calcWithArr(int from, int to) 
+{
+    	int mc = 1; 
+	int i = 0;
+    	int *arr = (int*) malloc(sizeof(int) * (to-from+1)); 
+    	*arr = 1;
+    	for (i = from + 1; i<= to; i++)
+	{
+        	if (i%2 == 0 && i/2 >= from)
+            		*(arr + i - from) = *(arr + i - from - 1) + *(arr + i / 2 - from);
+        	else 
+            		*(arr + i - from) = *(arr + i - from - 1);
+    	}
+    	mc = *(arr + to - from);
+    	free(arr);
+    	return mc;
+}
+
+
+// б) с использованием рекурсии. 
+int calcWithRecursion(int from, int to) 
+{
+    	int mc = 0; 
+    	if (from == to) 
+	{
+        	return 1;
+    	}
+    	if (from < to) 
+	{
+        	mc += calcWithRecursion(from + 1, to);
+        	mc += calcWithRecursion(from << 1, to);
+    	}
+    	return mc;
+}
+
+
+
+
