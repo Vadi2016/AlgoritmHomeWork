@@ -1,0 +1,173 @@
+#include <stdio.h>
+#include <locale.h>
+#include <math.h>
+
+void swap(int *a, size_t i1, size_t i2) 
+{
+    	size_t t = a[i1];
+    	a[i1] = a[i2];
+    	a[i2] = t;
+}
+
+
+void printArray(int *arr, size_t length) 
+{
+    	for (int i = 0; i < length; ++i) 
+	{
+        	printf("[%d]", arr[i]);
+    	}
+    	puts("");
+}
+
+
+int main(int argc, char* argv[]) 
+{
+	setlocale(LC_ALL, "Rus");
+	printf("1. Попробовать оптимизировать пузырьковую сортировку.\nСравнить количество операций сравнения оптимизированной и не оптимизированной программы.\nНаписать функции сортировки, которые возвращают количество операций.\n");
+    	size_t length = 10;
+    	int arr[10] = {99, 43, 15, 86, 2, 10, 101, 12, 55, 1};
+
+    	printArray(arr, length);
+    	int count1 = sortBubbleOptimum(arr, length);
+    	printArray(arr, length);
+    	printf("Number of operations (optimized): %d\n", count1);
+
+    	puts("");
+
+    	int arr2[10] = {99, 43, 15, 86, 2, 10, 101, 12, 55, 1};
+    	printArray(arr2, length);
+	int count2 = sortBubble(arr2, length);
+    	printArray(arr2, length);
+    	printf("Number of operations : %d\n", count2);
+
+	printf("\n\n2. *Реализовать шейкерную сортировку.\n");   	
+
+	int arr3[10] = {12, 3, 45, 2, 4, 6, 8, 10, 65, 1};
+    	printArray(arr3, length);
+    	int count3 = sortShaker(arr3, length);
+    	printArray(arr3, length);
+    	printf("Number of operations: %d\n", count3);
+
+	printf("\n\n3. Реализовать бинарный алгоритм поиска в виде функции,которой передается отсортированный массив.\n Функция возвращает индекс найденного элемента или -1, если элемент не найден.\n");
+
+	size_t length2 = 1000;
+    	int arr4[1000];
+    	for (int i = 0; i < length2; ++i) 
+	{
+        	arr4[i] = i;
+    	}
+
+    	int count4 = 0;
+	int d = 0;
+	
+    	int index = binaryFind(arr4, length2, 91, &count4);
+    	printf("\nIndex: %d\n", index);
+    	printf("Number of operations: %d\n", count4);
+
+	printf("\n\n4. *Подсчитать количество операций для каждой из сортировок и сравнить его с асимптотической сложностью алгоритма.\n");	
+	printf("\nДля первой задачи количество операций для оптимизированной сортировки пузырьком составляет %d и %d для неоптимизированной. Сложность сортировки O(n^2).", count1, count2);
+	printf("\nДля второй задачи количество операций составило %d. Сложность шейкерной сортировки составляет от O(n) до O(n^2).", count3);
+	float sl = log(length2)/log(2);
+	printf("\nДля третьей задачи количество операций составило %d при условии, что массив из %d элементов и индекс равен %d. Для бинарного поиска асимтотическая сложность O(log(n)), следовательно логорифм по основанию 2 от %d равен %.3f.", count4, length2, index, length2, sl);
+    	return 0;
+}
+
+
+
+/*
+ * 1. Попробовать оптимизировать пузырьковую сортировку.
+ * Сравнить количество операций сравнения оптимизированной и не оптимизированной программы.
+ * Написать функции сортировки, которые возвращают количество операций.
+ */
+
+int sortBubbleOptimum(int *arr, size_t length) 
+{
+    	int sorted;
+    	int count = 0;
+    	for (size_t i = 0; i < length; ++i) 
+	{
+        	sorted = 1;
+        	for (size_t j = 0; j < length - i - 1; ++j) 
+		{
+            		count++;
+            		if (arr[j + 1] < arr[j])
+			{
+                		swap(arr, j, j + 1);
+                		sorted = 0;
+            		}
+        	}
+        	if (sorted) return count;
+	
+    	}
+    	return count;
+}
+
+int sortBubble(int *arr, size_t length) {
+    	int count = 0;
+    	for (size_t i = 0; i < length; ++i) 
+	{
+        	for (size_t j = 0; j < length - 1; ++j) 
+		{
+            		count++;
+            		if (arr[j + 1] < arr[j])
+			{
+                		swap(arr, j, j + 1);
+            		}
+        	}
+	//        printArray(arr, length);
+    	}
+    	return count;
+}
+
+/*
+ * 2. *Реализовать шейкерную сортировку.
+ */
+
+int sortShaker(int *arr, size_t length) {
+    int sorted;
+    int count = 0;
+    for (size_t i = 0; i < length; ++i) {
+        sorted = 1;
+        if (i % 2 == 0) {
+            for (size_t j = i / 2; j < length - i / 2 - 1; ++j) {
+                count++;
+                if (arr[j + 1] < arr[j]) {
+                    swap(arr, j, j + 1);
+                    sorted = 0;
+                }
+            }
+        } else {
+            for (size_t j = (length - i / 2 - 2); j > i / 2; --j) {
+                count++;
+                if (arr[j - 1] > arr[j]){
+                    swap(arr, j, j - 1);
+                    sorted = 0;
+
+                }
+            }
+        }
+        if (sorted) return count;
+
+    }
+    return count;
+}
+
+/*
+ * 3. Реализовать бинарный алгоритм поиска в виде функции, которой передается отсортированный массив.
+ * Функция возвращает индекс найденного элемента или -1, если элемент не найден.
+ */
+
+int binaryFind(int *arr, size_t length, int item, int *count) 
+{
+    size_t l = 0;
+    size_t r = length;
+    size_t mid;
+    while (l <= r) {
+        mid = l + (r - l) / 2;
+        if (item == arr[mid]) return mid;
+        else if (item < arr[mid]) r = mid - 1;
+        else l = mid + 1;
+        *count += 1;
+    }
+    return -1;
+}
