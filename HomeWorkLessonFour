@@ -1,0 +1,219 @@
+
+#include <errno.h>
+#include <memory.h>
+#include <time.h>
+#include <stdio.h>
+
+/*
+ * 1. *Количество маршрутов с препятствиями.
+ * Реализовать чтение массива с препятствием и нахождение количество маршрутов. 
+ */
+
+#define SX 3
+#define SY 3
+
+int routes()
+{
+  	FILE *file = fopen("desk.txt", "r");
+
+
+    	if (file != NULL)
+	{
+
+   		int arr[SX][SY];
+
+        	// Читаем массив из файла
+        	size_t i = 0, j = 0;
+        	while (!feof(file)) 
+		{
+            		fscanf(file, "%d", &arr[i][j]);
+            		j++;
+            		if (j == SY) 
+			{
+                		j = 0;
+                		i++;
+            		}
+        	}
+
+        	// Печатаем массив
+        	for (int i = 0; i < SX; ++i) 
+		{
+            		for (int j = 0; j < SY; ++j) 
+			{
+                		printf("%d ", arr[i][j]);
+            		}
+            		puts("");
+        	}
+        	puts("");
+
+        	for (int i = 0; i < SX; ++i) 
+		{
+            		arr[i][0] = 1;
+        	}
+
+        	for (int i = 1; i < SX; ++i) 
+		{
+            		for (int j = 1; j < SY; ++j) 
+			{
+                		arr[0][j] = 1;
+                		if (arr[i][j] == 0) continue;
+                		arr[i][j] = arr[i - 1][j] + arr[i][j - 1];
+            		}
+        	}
+
+        	// Печатаем массив
+        	for (int i = 0; i < SX; ++i) 
+		{
+            		for (int j = 0; j < SY; ++j) 
+			{
+                		printf("%d ", arr[i][j]);
+            		}
+            	puts("");
+        	}
+        	puts("");
+
+        	printf("Maximum possible routes = %d", arr[SX - 1][SY - 1]);
+    	} 
+	else
+	{
+        	printf("File is null. errno = %d", errno);
+    	}
+
+    	fclose(file);
+
+    	return 0;
+}
+
+// 2. Решить задачу о нахождении длины максимальной последовательности с помощью матрицы.
+
+#define S1 ((const unsigned char *)"asdadfaf")
+#define S2 ((const unsigned char *)"ggdfdgfvcvbvghdta")
+
+int sequenceWithMatrix() 
+{
+	
+	int length1 = strlen(S1);
+	int length2 = strlen(S2);
+	 
+    	char common[length1];
+   	printf("\nlength1 = %d, length2 = %d\n", length1 , length2);
+
+    	int i = 0, j = 0, seqSize = 0;
+    	while (i < length1)
+	{
+        	if (S1[i] == S2[j]) 
+		{
+            		common[seqSize] = S1[i];
+            		i++;
+            		seqSize++;
+        	}
+        	j++;
+        	if (j == length2) 
+		{
+            		i++;
+            		j = i;
+        	}
+    	}
+    	printf("\ncommon subsequence size = %d, sequence = '%s'", seqSize, common);
+    
+    	return 0;
+}
+
+/*
+ * 3. ***Требуется обойти конём шахматную доску размером NxM, пройдя через все поля доски по одному разу.
+ * Здесь алгоритм решения такой же как и в задаче о 8 ферзях. Разница только в проверке положения коня.
+*/
+
+#define N 8
+#define M 8
+
+int isOutside(int x, int y);
+int searchSolution(int n, int x, int y);
+void zeroBoard(int n, int m, int arr[n][m]);
+void printArray(int n, int m, int arr[n][m]);
+
+int board[N][M];
+
+int theMoveOfTheHorse() 
+{
+    	clock_t start = clock();
+
+    	zeroBoard(N, M, board);
+    	// Начинаем решение с хода в верхний левый угол
+    	searchSolution(1, 3, 3);
+    	printArray(N, M, board);
+
+    	clock_t end = clock();
+    	printf("\nTime spent: %.3f", (double)(end - start) / CLOCKS_PER_SEC);
+
+    	return 0;
+}
+
+int isOutside(int x, int y) 
+{
+	return x < 0 || x >= N || y < 0 || y >= M;
+}
+
+int searchSolution(int n, int x, int y) 
+{
+    	// n - номер текущего хода, x и y - координаты коня на доске
+    	// Если текущая клетка уже занята либо лежит за пределами доски, то этот вариант отпадает
+    	if (board[x][y] != 0 || isOutside(x, y)) return 0;
+    	// Когда текущее положение равно кол-ву клеток на доске, празднуем победу
+    	if (n == N * M) 
+	{
+        	return 1;
+    	}	
+
+    	// Тут проверяем все возможные ходы коня
+    	if (board[x][y] == 0) 
+	{
+        	// Занимаем клетку текущим номером хода
+        	board[x][y] = n;
+        	if (searchSolution(n + 1, x + 1, y + 2)) return 1; // 1
+        	if (searchSolution(n + 1, x + 2, y + 1)) return 1; // 2
+        	if (searchSolution(n + 1, x - 1, y + 2)) return 1; // 3
+        	if (searchSolution(n + 1, x + 2, y - 1)) return 1; // 4
+        	if (searchSolution(n + 1, x - 2, y + 1)) return 1; // 5
+        	if (searchSolution(n + 1, x + 1, y - 2)) return 1; // 6
+        	if (searchSolution(n + 1, x - 2, y - 1)) return 1; // 7
+        	if (searchSolution(n + 1, x - 1, y - 2)) return 1; // 8
+        	// Если все возможные ходы не привели к решению задачи, освобождаем клетку
+        	board[x][y] = 0;
+    	}
+
+    	return 0;
+}
+
+void zeroBoard(int n, int m, int arr[n][m]) 
+{
+    	for (int i = 0; i < n; ++i) 
+	{
+        	for (int j = 0; j < m; ++j) 
+		{
+            		arr[i][j] = 0;
+        	}
+    	}
+}
+
+void printArray(int n, int m, int arr[n][m]) 
+{
+    	for (int i = 0; i < n; ++i) 
+	{
+        	for (int j = 0; j < m; ++j) 
+		{
+            		printf("%2d ", arr[i][j]);
+        	}
+        	puts("");
+    	}
+}
+
+int main(int argc, char* argv[])
+{
+	routes();
+	puts("");
+	sequenceWithMatrix();
+	puts("");
+	theMoveOfTheHorse();
+
+}
