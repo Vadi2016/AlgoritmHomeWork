@@ -1,0 +1,565 @@
+#include <stdio.h>
+#include <malloc.h>
+#include <memory.h>
+#include <ctype.h>
+
+
+/*
+ * 1. Реализовать перевод из 10 в 2 систему счисления с использованием стека.
+ */
+
+#define MaxN 1000
+#define T char
+
+struct TNode
+{
+    	T value;
+    	struct TNode *next;
+};
+typedef struct TNode Node;
+
+struct Stack
+{
+    	Node *head;
+    	int size;
+    	int maxSize;
+};
+
+typedef struct Stack Stack;
+
+Stack stack;
+
+void push(Stack *stack, T data);
+T pop(Stack *stack);
+void init(Stack *stack, int maxSize);
+void printStack(Stack *stack);
+
+
+
+
+void printBinary(int n, Stack *stack)
+{
+    	while (n > 0) 
+	{
+        	if (n & 1)
+		{
+            		push(stack, '1');
+        	} 
+		else 
+		{
+            		push(stack, '0');
+        	}
+        	n >>= 1;
+    	}
+}
+
+
+void push(Stack *stack, T value)
+{
+    	if (stack->size >= stack->maxSize)
+	{
+        	printf("Error: stack overflow\n");
+        	return;
+    	}
+    	Node *tmp = (Node*)malloc(sizeof(Node));
+    	tmp->value = value;
+    	tmp->next = stack->head;
+    	stack->head = tmp;
+    	stack->size++;
+}
+
+T pop(Stack *stack)
+{
+    	if (stack->size == 0) 
+	{
+        	printf("Error: stack is empty\n");
+        	return NULL;
+    	}
+    	Node *next;
+    	T value = stack->head->value;
+    	next = stack->head;
+    	stack->head = stack->head->next;
+    	free(next);
+    	stack->size--;
+    	return value;
+}
+
+
+void init(Stack *stack, int maxSize)
+{
+    	stack->maxSize = maxSize;
+    	stack->head = NULL;
+}
+
+void printStack(Stack *stack)
+{
+    	Node *current = stack->head;
+    	while (current!= NULL) 
+	{
+        	printf("%c ", current->value);
+        	current = current->next;
+    	}
+}
+
+int peek() {
+   return 0;
+}
+
+
+int binaryMain() 
+{
+	init(&stack, MaxN);
+    	printBinary(198, &stack);
+    	printStack(&stack);
+	peek();
+    	return 0;
+}
+
+// ------------------------------------------------------------
+
+/*
+ * 2. Добавить в программу “реализация стека на основе односвязного списка” проверку на выделение памяти.
+ * Если память не выделяется, то выводится соответствующее сообщение. Постарайтесь создать ситуацию,
+ * когда память не будет выделятся (добавлением большого количества​ ​данных).
+ */
+
+#define MaxN 100
+
+
+void add(Stack *stack, T data);
+
+
+int stackOverflow() 
+{
+	init(&stack, MaxN);
+	for (int i = 0; i < MaxN + 1; i++) 
+	{
+        	add(&stack, i + 1);
+    	}
+    	printStack(&stack);
+
+    	return 0;
+}
+
+void add(Stack *stack, T value)
+{
+    	if (stack->size >= stack->maxSize)
+	{
+        	printf("Error: stack overflow\n");
+        	return;
+    	}
+    	Node *tmp = (Node*)malloc(sizeof(Node));
+    	tmp->value = value;
+    	tmp->next = stack->head;
+    	stack->head = tmp;
+    	stack->size++;
+}
+
+
+
+
+// -------------------------------------------------------------
+
+/*
+ * 3. Написать программу, которая определяет, является ли введенная скобочная последовательность правильной.
+ * Примеры правильных скобочных выражений: (), ([])(), {}(), ([{}]),​ ​неправильных​ ​—​ ​)(,​ ​())({),​ ​(,​ ​])}),​ ​([(])
+ * ​для​ ​скобок​ ​[,(,{. Например:​ ​(2+(2*2))​ ​или​ ​[2/{5*(4+7)}]
+ */
+
+
+
+
+
+
+
+int checkBrackets(char *chars, Stack *stack)
+{
+    	int length = strlen(chars);
+    	for (int i = 0; i < length; i++) 
+	{
+        	char current = chars[i];
+        	if (current == '{' || current == '[' || current == '(') 
+		{
+            		push(stack, chars[i]);
+        	}
+        	if (current == '}' && pop(stack) != '{') 
+		{
+            		return 0;
+        	}
+        	if (current == ']' && pop(stack) != '[') 
+		{
+            		return 0;
+        	}
+        	if (current == ')') 
+		{
+           		char tmp = pop(stack);
+            		if (tmp != '(')
+                	return 0;
+        	}
+    	}
+    	if (stack->size == 0) return 1; else return 0;
+}
+
+int parenthesisSequenceMain() 
+{
+    	init(&stack, MaxN);
+	//    char *string = "(2+(2*2))";
+    	//    char *string = "(2+(2{*2)}[])";
+	char *string = "(2+(2*2)[]{({hi}world)})";
+    	printStack(&stack);
+    	printf("The string %s: has %s brackets", string, checkBrackets(string, &stack) ? "right" : "wrong");
+
+    	return 0;
+}
+
+// ------------------------------------------------------------
+
+/*
+ * 4. *Создать функцию, копирующую односвязный список (то есть создает в памяти копию  односвязного​ ​списка,​
+ * ​без​ ​удаления​ ​первого​ ​списка).
+ */
+
+void listAdd(Node **head, T value);
+void listCopy(Node *from, Node **to);
+void printList(Node *head, char *title);
+
+int copyList() 
+{
+    	Node *head1 = NULL;
+    	printList(head1, "list 1:");
+    	for (int i = 1; i <= 10; i++) 
+	{
+        	listAdd(&head1, i);
+    	}
+    	printList(head1, "list 1:");
+
+    	Node *head2 = NULL;
+    	listCopy(head1, &head2);
+    	printList(head2, "list 2:");
+
+    	listAdd(&head1, 10);
+    	listAdd(&head2, 20);
+    	printList(head1, "list 1:");
+    	printList(head2, "list 2:");
+
+    	return 0;
+}
+
+void listAdd(Node **head, T value) 
+{
+    	Node *node = (Node*)malloc(sizeof(Node));
+    	node->value = value;
+    	node->next = NULL;
+    	printf("Added: %2d\n", node->value);
+
+    	if (*head == NULL) 
+	{
+        	*head = node;
+        	return;
+    	}
+    	Node *tmp = *head;
+    	while (tmp->next != NULL) 
+	{
+        	tmp = tmp->next;
+    	}
+    	tmp->next = node;
+}
+
+void listCopy(Node *from, Node **to) 
+{
+    	if (from == NULL) 
+	{
+        	printf("Error: can't copy list. Head is NULL\n");
+        	return;
+    	}	
+    	*to = NULL;
+
+    	Node *current = (Node*)malloc(sizeof(Node));
+    	current->value = from->value;
+    	current->next = NULL;
+    	*to = current;
+    	from = from->next;
+
+    	while (from != NULL) 
+	{
+        	Node *newNode = (Node*)malloc(sizeof(Node));
+        	newNode->value = from->value;
+        	newNode->next = NULL;
+
+        	current->next = newNode;
+        	current = current->next;
+
+        	from = from->next;
+    	}
+}
+
+void printList(Node *head, char *title) 
+{
+    	Node *tmp = head;
+    	printf("Print %s\n", title);
+    	if (head == NULL) 
+	{
+        	printf("Error: can't print empty list. Head is NULL\n");
+        	return;
+    	}
+   	while (tmp != NULL) 
+	{
+        	printf("%d ", tmp->value);
+        	tmp = tmp->next;
+    	}
+    	puts("");
+}
+
+// -------------------------------------------------------------
+
+/*
+ * 5. **Реализовать алгоритм перевода из инфиксной записи арифметического выражения в постфиксную.
+ */
+
+int isOperator(char c) 
+{
+    	if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^') return 1;
+    	else return 0;
+}
+
+int isNumberOrLetter(char c) 
+{
+    	if (!(isOperator(c) || c == '(' || c == ')')) return 1;
+    	else return 0;
+}
+
+int getPriority(char c) 
+{
+    	switch (c) 
+	{
+        	case '+':
+        	case '-':
+            		return 1;
+        	case '*':
+        	case '/':
+            		return 2;
+        	case '^':
+            		return 3;
+        	case '(':
+        	case ')':
+            		return 0;
+        	default:
+            		return -1;
+    	}
+}
+
+int isEmptyStack(Stack *stack) 
+{
+    	if (stack->size == 0) return 1;
+    	else return 0;
+}
+
+T getHead(Stack *stack) 
+{
+    	if (isEmptyStack(stack) == 1) return NULL;
+    	else return stack->head->value;
+}
+
+void infixToPostfix(char *in, char *out, int inLength) 
+{
+    	int pos = 0;
+    	// Флаг, чтобы понимать, что закончилось одно число и можно отделить его от следующего пробелом
+    	int isCompleteNumber = 0;
+    	for (int i = pos; i < inLength; i++) 
+	{
+        	char current = in[i];
+
+        	if(isspace(current)) continue;
+
+        	if (current == '(') 
+		{
+            		add(&stack, current);
+            		continue;
+        	}
+
+        	// Выкидываем из стека все знаки до предыдущей скобки
+        	if (current == ')') 
+		{
+            		while (isEmptyStack(&stack) != 1 && getHead(&stack) != '(') 
+			{
+                		current = pop(&stack);
+                		out[pos] = current;
+                		pos++;
+            		}
+            		pop(&stack); // Убираем скобку "(" из стека
+            		continue;
+        	}
+
+        	if (isOperator(current)) 
+		{
+            		isCompleteNumber = 1; // Если встретили оператор, то пора отделять числа друг от друга
+            		if (getHead(&stack) == NULL) 
+			{
+                		add(&stack, current);
+                		continue;
+            		}
+            		if (getPriority(current) > getPriority(getHead(&stack))) 
+			{
+                		add(&stack, current);
+            		} 
+			else 
+			{
+                		char tmp = ' ';
+                		// Пока не достигнем меньшего по приоритету знака в стеке, выкидываем все знаки
+                		while (isEmptyStack(&stack) != 1 && tmp != '(' && getPriority(current) <= getPriority(getHead(&stack))) 
+				{
+                    			tmp = pop(&stack);
+                    			out[pos] = tmp;
+                    			pos++;
+                		}
+                		add(&stack, current);
+            		}
+            		continue;
+        	}
+
+        	// Вставляем разделитель чисел, если нужно
+        	if (i > 0 && isCompleteNumber && isNumberOrLetter(out[pos - 1])) 
+		{
+            		out[pos] = ' ';
+            		pos++;
+        	}
+        	isCompleteNumber = 0;
+        	out[pos] = current;
+        	pos++;
+    	}
+
+    	Node *node = stack.head;
+    	while (node!= NULL) 
+	{
+        	out[pos] = node->value;
+        	pos++;
+        	node = node->next;
+    	}
+
+    	out[pos] = '\0'; // Отсекаем все случайные символы в массиве
+}
+
+int sufixToPostfix() 
+{
+    	init(&stack, MaxN);
+	//    char *infix = "a + b * c / (d - e * f ^ (g + h) * k) ^ i";
+	//    char *infix = "11 + 12 * 13 / (14 - 15 * 16 ^ (17 + 18) * 19) ^ 20";
+	//    char *infix = "1145 + 14512 * 53113 / (45141 - 1545 * 15436 ^ (1437 + 143584) * 435149) ^ 24350";
+    	char *infix = "2 ^ 5 * 3 + 6";
+    	int infixLength = strlen(infix);
+    	char postfix[infixLength * 2];
+   	infixToPostfix(infix, postfix, infixLength);
+    	printf("infix = %s\n", infix);
+    	printf("postfix = %s\n", postfix);
+
+    	return 0;
+}
+
+// -------------------------------------------------------------
+
+/*
+ * 6. *Реализовать​ ​очередь.
+ */
+
+struct Queue
+{
+    	Node *head;
+    	Node *tail;
+};
+
+typedef struct Queue Queue;
+
+void initQueue(Queue *queue);
+void enqueue(Queue *queue, T value);
+T dequeue(Queue *queue);
+void printQueue(Queue *queue);
+
+int queueMain() 
+{
+    	Queue queue;
+    	initQueue(&queue);
+    	printQueue(&queue);
+
+    	for (int i = 1; i <= 10; i++) 
+	{
+        	enqueue(&queue, i);
+    	}
+
+    	printQueue(&queue);
+
+    	for (int i = 1; i <= 10; i++) 
+	{
+        	printf("Dequeued value: %d\n", dequeue(&queue));
+    	}	
+
+    	printQueue(&queue);
+
+    	return 0;
+}
+
+void initQueue(Queue *queue)
+{
+    	queue->head = NULL;
+    	queue->tail = NULL;
+}
+
+void enqueue(Queue *queue, T value)
+{
+    	Node *node = (Node*)malloc(sizeof(Node));
+    	node->value = value;
+    	node->next = NULL;
+    	if (queue->head == NULL) 
+	{
+       		queue->head = node;
+    	} 
+	else 
+	{
+        	queue->tail->next = node;
+    	}
+    	queue->tail = node;
+}
+
+T dequeue(Queue *queue)
+{
+    	if (queue->head == NULL) 
+	{
+        	printf("Error: Queue is empty");
+        	return NULL;
+    	}
+    	T value = queue->head->value;
+    	Node *next = queue->head;
+    	queue->head = queue->head->next;
+    	free(next);
+    	return value;
+}
+
+void printQueue(Queue *queue)
+{
+    	printf("printQueue(): ");
+    	Node *current = queue->head;
+    	while (current != NULL) 
+	{
+        	printf("%d ", current->value);
+        	current = current->next;
+    	}
+    	puts("");
+}
+
+// -------------------------------------------------------------
+
+int main(int argc, char* argv[])
+{
+	//binaryMain();
+	
+	//printf("\n-------------------------------------\n");
+	// stackOverflow();
+	// printf("\n-------------------------------------\n");	
+	//parenthesisSequenceMain();
+	//printf("\n-------------------------------------\n");	
+	//copyList();
+	//printf("\n-------------------------------------\n");
+	//sufixToPostfix();
+	//printf("\n-------------------------------------\n");	
+	queueMain();
+}
+
